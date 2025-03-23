@@ -1,12 +1,12 @@
 import { Calorie, HeartRate } from '@zos/sensor'
 import { createWidget, prop, widget } from '@zos/ui'
-import { CALORIE_TEXT, HEART_RATE_TEXT } from '../utils/styles.gtr3.mini'
+import { CALORIE_TEXT, HEART_RATE_TEXT, START_BUTTON } from '../utils/styles.gtr3.mini'
 
 
 Page({
   build() {
-    const heartRate= new HeartRate()
-    const calorie= new Calorie()
+    const heartRate = new HeartRate()
+    const calorie = new Calorie()
 
     const hrText = createWidget(widget.TEXT, {
       ...HEART_RATE_TEXT,
@@ -19,8 +19,7 @@ Page({
     })
 
     const calorieChangeCallback = () => {
-      console.log(`EVENT-CHANGE: ${calorie.getCurrent()}`)
-      calorieText.setProperty(prop.MORE, {
+      calorieText.setProperty(prop.TEXT, {
         text: `New CAL: ${calorie.getCurrent()}`,
       });
     };
@@ -28,12 +27,21 @@ Page({
     calorie.onChange(calorieChangeCallback)
 
     const hrChangeCallback = () => {
-      hrText.setProperty(prop.MORE, {
+      hrText.setProperty(prop.TEXT, {
         text: `New HR: ${heartRate.getCurrent()}`,
       });
     };
 
     heartRate.onCurrentChange(hrChangeCallback)
+
+    const bbtn = createWidget(widget.BUTTON, {
+      ...START_BUTTON,
+      text: 'Start',
+      click_func: (btn) => {
+        console.log('Button clicked')
+        btn.setProperty(prop.TEXT, { text: 'Clicou' })
+      }
+    })
   }
 })
 

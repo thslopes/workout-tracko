@@ -36,3 +36,23 @@ export const HEART_RATE_TEXT = {
     text_style: text_style.NONE,
     text: 'TODO'
 }
+
+
+
+const startButtonWidth = 200;
+const startButtonHeight = 100;
+const startButtonX = DEVICE_WIDTH / 2 - startButtonWidth / 2;
+
+export const START_BUTTON = {
+    x: startButtonX,
+    y: 0,
+    w: startButtonWidth,
+    h: startButtonHeight,
+    radius: 12,
+    text_size: 36,
+    color: 0xffffff,
+    align_h: align.CENTER_H,
+    align_v: align.CENTER_V,
+    normal_color: 0x00dd00,
+    press_color: 0xff0000
+}
