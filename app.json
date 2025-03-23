@@ -6,7 +6,7 @@
     "appType": "app",
     "version": {
       "code": 1,
-      "name": "1.0.2"
+      "name": "1.0.2.123"
     },
     "icon": "workout-tracko.png",
     "vender": "zepp",
@@ -15,7 +15,8 @@
   "permissions": [
     "data:os.device.info",
     "device:os.local_storage",
-    "data:user.hd.fat_burning"
+    "data:user.hd.heart_rate",
+    "data:user.hd.calorie"
   ],
   "runtime": {
     "apiVersion": {

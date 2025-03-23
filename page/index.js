@@ -1,34 +1,39 @@
-import { FatBurning } from '@zos/sensor'
-import { align, createWidget, text_style, widget } from '@zos/ui'
+import { Calorie, HeartRate } from '@zos/sensor'
+import { createWidget, prop, widget } from '@zos/ui'
+import { CALORIE_TEXT, HEART_RATE_TEXT } from '../utils/styles.gtr3.mini'
 
 
 Page({
-  state: {
-    fatBurning: new FatBurning(),
-    text: null
-  },
-  onInit() {
-    this.state.fatBurning.onChange(() => {
-      console.log('onChange', this.state.fatBurning.getCurrent())
-      this.state.text.text = `${this.state.fatBurning.getCurrent()}`
-    })
-    // set screen alweys on
-    this.setScreenOn(true)
-  },
   build() {
-    const text = createWidget(widget.TEXT, {
-      x: 0,
-      y: 100,
-      w: 288,
-      h: 46,
-      color: 0xffffff,
-      text_size: 36,
-      align_h: align.CENTER_H,
-      align_v: align.CENTER_V,
-      text_style: text_style.NONE,
-      text: `${this.state.fatBurning.getCurrent()}`
+    const heartRate= new HeartRate()
+    const calorie= new Calorie()
+
+    const hrText = createWidget(widget.TEXT, {
+      ...HEART_RATE_TEXT,
+      text: 'HR: ' + heartRate.getCurrent()
     })
-    this.state.text = text
+
+    const calorieText = createWidget(widget.TEXT, {
+      ...CALORIE_TEXT,
+      text: 'CAL: ' + calorie.getCurrent()
+    })
+
+    const calorieChangeCallback = () => {
+      console.log(`EVENT-CHANGE: ${calorie.getCurrent()}`)
+      calorieText.setProperty(prop.MORE, {
+        text: `New CAL: ${calorie.getCurrent()}`,
+      });
+    };
+
+    calorie.onChange(calorieChangeCallback)
+
+    const hrChangeCallback = () => {
+      hrText.setProperty(prop.MORE, {
+        text: `New HR: ${heartRate.getCurrent()}`,
+      });
+    };
+
+    heartRate.onCurrentChange(hrChangeCallback)
   }
 })
 
