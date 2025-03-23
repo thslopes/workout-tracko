@@ -1,42 +1,78 @@
-import { getDeviceInfo } from '@zos/device';
-import { align, text_style } from '@zos/ui';
+import zdevice from '@zos/device';
+import zui from '@zos/ui';
 
-export const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = getDeviceInfo();
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = zdevice.getDeviceInfo();
 
+const { width: calorieLabelWidth, height: calorieLabelHeight } = zui.getTextLayout('cal', {
+    text_size: 36,
+    text_width: 200
+})
 
-const calorieTextX = DEVICE_WIDTH / 2 - 144;
-const calorieTextY = DEVICE_HEIGHT / 2 - 23;
+const { width: maxCalTextWidth, height: maxCalTextHeight } = zui.getTextLayout('0000', {
+    text_size: 36,
+    text_width: 200
+})
 
-export const CALORIE_TEXT = {
-      x: calorieTextX,
-      y: calorieTextY,
-      w: 288,
-      h: 46,
-      color: 0xffffff,
-      text_size: 36,
-      align_h: align.CENTER_H,
-      align_v: align.CENTER_V,
-      text_style: text_style.NONE,
-      text: 'TODO'
+const calorieLabelY = DEVICE_HEIGHT / 2 - 23 + 46;
+
+export const CALORIE_LABEL = {
+    x: 0,
+    y: calorieLabelY,
+    w: DEVICE_WIDTH / 2 - 5,
+    h: calorieLabelHeight,
+    color: 0xffffff,
+    text_size: 36,
+    align_h: zui.align.RIGHT,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
 }
 
+const calorieTextX = DEVICE_WIDTH / 2 + 5;
+const calorieTextY = calorieLabelY;
 
-const heartRateTextX = DEVICE_WIDTH / 2 - 144;
-const heartRateTextY = DEVICE_HEIGHT / 2 - 23 + 50;
+export const CALORIE_TEXT = {
+    x: calorieTextX,
+    y: calorieTextY,
+    w: maxCalTextWidth,
+    h: maxCalTextHeight,
+    color: 0xffffff,
+    text_size: 36,
+    align_h: zui.align.LEFT,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
+const { width: maxHRTextWidth, height: maxHRTextHeight } = zui.getTextLayout('0000', {
+    text_size: 36,
+    text_width: 200
+})
+
+const heartRateTextX = DEVICE_WIDTH / 2 + 5;
+const heartRateTextY = DEVICE_HEIGHT / 2 - 23;
 
 export const HEART_RATE_TEXT = {
     x: heartRateTextX,
     y: heartRateTextY,
-    w: 288,
-    h: 46,
+    w: maxHRTextWidth,
+    h: maxHRTextHeight,
     color: 0xffffff,
     text_size: 36,
-    align_h: align.CENTER_H,
-    align_v: align.CENTER_V,
-    text_style: text_style.NONE,
-    text: 'TODO'
+    align_h: zui.align.LEFT,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
 }
 
+export const HR_LABEL = {
+    x: 0,
+    y: heartRateTextY,
+    w: DEVICE_WIDTH / 2 - 5,
+    h: calorieLabelHeight,
+    color: 0xffffff,
+    text_size: 36,
+    align_h: zui.align.RIGHT,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
 
 
 const startButtonWidth = 200;
@@ -51,8 +87,8 @@ export const START_BUTTON = {
     radius: 12,
     text_size: 36,
     color: 0xffffff,
-    align_h: align.CENTER_H,
-    align_v: align.CENTER_V,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
     normal_color: 0x00dd00,
     press_color: 0xff0000
 }

@@ -1,26 +1,41 @@
+import { getText } from '@zos/i18n'
 import { Calorie, HeartRate } from '@zos/sensor'
 import { createWidget, prop, widget } from '@zos/ui'
-import { CALORIE_TEXT, HEART_RATE_TEXT, START_BUTTON } from '../utils/styles.gtr3.mini'
+import { CALORIE_LABEL, CALORIE_TEXT, HEART_RATE_TEXT, START_BUTTON, HR_LABEL } from '../utils/styles.gtr3.mini'
+import { Time } from '@zos/sensor'
 
 
 Page({
+  state: {
+    startTime: new Time().getTime(),
+  },
   build() {
     const heartRate = new HeartRate()
     const calorie = new Calorie()
 
+    createWidget(widget.TEXT, {
+      ...HR_LABEL,
+      text: getText('hr')
+    })
+
     const hrText = createWidget(widget.TEXT, {
       ...HEART_RATE_TEXT,
-      text: 'HR: ' + heartRate.getCurrent()
+      text: heartRate.getCurrent()
+    })
+
+    createWidget(widget.TEXT, {
+      ...CALORIE_LABEL,
+      text: getText('cal')
     })
 
     const calorieText = createWidget(widget.TEXT, {
       ...CALORIE_TEXT,
-      text: 'CAL: ' + calorie.getCurrent()
+      text: calorie.getCurrent()
     })
 
     const calorieChangeCallback = () => {
       calorieText.setProperty(prop.TEXT, {
-        text: `New CAL: ${calorie.getCurrent()}`,
+        text: calorie.getCurrent(),
       });
     };
 
@@ -28,7 +43,7 @@ Page({
 
     const hrChangeCallback = () => {
       hrText.setProperty(prop.TEXT, {
-        text: `New HR: ${heartRate.getCurrent()}`,
+        text: heartRate.getCurrent(),
       });
     };
 

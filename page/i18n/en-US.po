@@ -1,2 +1,8 @@
 msgid "example"
 msgstr "This is an example in device"
+
+msgid "cal"
+msgstr "Calories:"
+
+msgid "hr"
+msgstr "Heart Rate:"

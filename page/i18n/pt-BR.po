@@ -1,2 +1,8 @@
 msgid "example"
 msgstr "Em Português"
+
+msgid "cal"
+msgstr "Calorias:"
+
+msgid "hr"
+msgstr "Freq Card:"
