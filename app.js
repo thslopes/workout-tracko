@@ -1,6 +1,5 @@
 import { setStatusBarVisible, updateStatusBarTitle } from '@zos/ui'
 
-
 App({
   onCreate(options) {
     console.log('app on create invoke')

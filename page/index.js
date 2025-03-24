@@ -1,6 +1,7 @@
 import { getText } from '@zos/i18n'
 import { Calorie, HeartRate, Time } from '@zos/sensor'
 import { createWidget, prop, widget } from '@zos/ui'
+import { getActualSet } from '../utils/exercise'
 import { CALORIE_LABEL, CALORIE_TEXT, EXERCISE_TEXT, FINISH_BUTTON, HEART_RATE_TEXT, HR_LABEL, SET_TEXT, START_BUTTON, TIME_TEXT, TOTAL_TIME } from '../utils/styles.gtr3.mini'
 
 
@@ -11,6 +12,30 @@ Page({
     started: false,
     timerId: null,
     initialCalorie: 0,
+    actualSet: 1,
+    actualExercise: 0,
+    workout: [
+      {
+        'name': "Graviton",
+        'sets': 4,
+      },
+      {
+        'name': "Remada Articulada 20kg",
+        'sets': 3,
+      },
+      {
+        'name': "Serrote 12kg",
+        'sets': 3,
+      },
+      {
+        'name': "Rosca Martelo 9kg",
+        'sets': 3,
+      },
+      {
+        'name': "Rosca Scott 10kg",
+        'sets': 3,
+      }
+    ]
   },
   build() {
     const heartRate = new HeartRate()
@@ -40,12 +65,12 @@ Page({
 
     const setText = createWidget(widget.TEXT, {
       ...SET_TEXT,
-      text: '1 / 3'
+      text: `${this.state.actualSet} / ${this.state.workout[this.state.actualExercise].sets}`
     })
 
     const exerciseText = createWidget(widget.TEXT, {
       ...EXERCISE_TEXT,
-      text: 'Agachamento Máquina com barra'
+      text: this.state.workout[this.state.actualExercise].name
     })
 
     const calorieChangeCallback = () => {
@@ -86,6 +111,18 @@ Page({
         clearInterval(this.state.timerId)
         this.state.intervalTime = new Time().getTime()
         this.state.timerId = setInterval(setIntervalTime(this.state.intervalTime, intervalTimer), 100)
+        const { actualSet, actualExercise, currentExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
+        console.log('actualSet', actualSet)
+        console.log('actualExercise', actualExercise)
+        console.log('currentExercise', currentExercise.name)
+        this.state.actualSet = actualSet
+        this.state.actualExercise = actualExercise
+        exerciseText.setProperty(prop.TEXT, {
+          text: currentExercise.name
+        })
+        setText.setProperty(prop.TEXT, {
+          text: `${actualSet} / ${currentExercise.sets}`
+        })
       }
     })
 
