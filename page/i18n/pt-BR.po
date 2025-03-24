@@ -2,7 +2,7 @@ msgid "example"
 msgstr "Em Português"
 
 msgid "cal"
-msgstr "Calorias:"
+msgstr "Calorias"
 
 msgid "hr"
-msgstr "Freq Card:"
+msgstr "Freq Card"
