@@ -27,19 +27,7 @@ const { width: maxHRTextWidth, height: maxHRTextHeight } = zui.getTextLayout('00
 })
 
 const heartRateTextX = DEVICE_WIDTH / 2 + 5;
-const heartRateTextY = startButtonHeight + 20;
-
-export const HEART_RATE_TEXT = {
-    x: heartRateTextX,
-    y: heartRateTextY,
-    w: maxHRTextWidth,
-    h: maxHRTextHeight,
-    color: 0xffffff,
-    text_size: 36,
-    align_h: zui.align.LEFT,
-    align_v: zui.align.CENTER_V,
-    text_style: zui.text_style.NONE
-}
+const heartRateTextY = startButtonHeight + 5;
 
 export const HR_LABEL = {
     x: 0,
@@ -53,6 +41,17 @@ export const HR_LABEL = {
     text_style: zui.text_style.NONE
 }
 
+export const HEART_RATE_TEXT = {
+    x: heartRateTextX,
+    y: heartRateTextY,
+    w: maxHRTextWidth,
+    h: maxHRTextHeight,
+    color: 0xffffff,
+    text_size: 36,
+    align_h: zui.align.LEFT,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
 
 const { height: calorieLabelHeight } = zui.getTextLayout('cal', {
     text_size: 36,
@@ -89,6 +88,40 @@ export const CALORIE_TEXT = {
     color: 0xffffff,
     text_size: 36,
     align_h: zui.align.LEFT,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
+const { width: timeTextWitdh, height: timeTextHeight } = zui.getTextLayout('00:00:00.0', {
+    text_size: 36,
+    text_width: 200
+})
+
+const timeTextX = DEVICE_WIDTH / 2 - timeTextWitdh / 2;
+const timeTextY = calorieLabelY + calorieLabelHeight + 20;
+
+export const TIME_TEXT = {
+    x: timeTextX,
+    y: timeTextY,
+    w: timeTextWitdh,
+    h: timeTextHeight,
+    color: 0xffffff,
+    text_size: 36,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
+const totalTimeTextY = timeTextY + timeTextHeight + 20;
+
+export const TOTAL_TIME = {
+    x: timeTextX,
+    y: totalTimeTextY,
+    w: timeTextWitdh,
+    h: timeTextHeight,
+    color: 0xffffff,
+    text_size: 36,
+    align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
     text_style: zui.text_style.NONE
 }
