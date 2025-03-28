@@ -48,12 +48,12 @@ const { height: hrCalorieLabelHeight } = zui.getTextLayout('cal', {
 const hrCaloriesLabelY = startButtonHeight + 5;
 
 export const HR_LABEL = {
-    x: DEVICE_WIDTH / 2 - 100,
+    x: DEVICE_WIDTH / 2 - 150,
     y: hrCaloriesLabelY,
-    w: 100,
+    w: 150,
     h: hrCalorieLabelHeight,
     color: 0xffffff,
-    text_size: 18,
+    text_size: 23,
     align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
     text_style: zui.text_style.NONE
@@ -62,10 +62,10 @@ export const HR_LABEL = {
 export const CALORIE_LABEL = {
     x: DEVICE_WIDTH / 2,
     y: hrCaloriesLabelY,
-    w: 100,
+    w: 150,
     h: hrCalorieLabelHeight,
     color: 0xffffff,
-    text_size: 18,
+    text_size: 23,
     align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
     text_style: zui.text_style.NONE
@@ -78,7 +78,7 @@ const { height: maxHRCalorieTextHeight } = zui.getTextLayout('0000', {
 
 const hrCaloriesTextY = hrCaloriesLabelY + hrCalorieLabelHeight;
 
-const heartRateTextX = DEVICE_WIDTH / 2 - 100;
+const heartRateTextX = DEVICE_WIDTH / 2 - 150;
 
 export const HEART_RATE_TEXT = {
     x: heartRateTextX,
@@ -92,7 +92,7 @@ export const HEART_RATE_TEXT = {
     text_style: zui.text_style.NONE
 }
 
-const calorieTextX = DEVICE_WIDTH / 2;
+const calorieTextX = DEVICE_WIDTH / 2 + 50;
 
 export const CALORIE_TEXT = {
     x: calorieTextX,
@@ -112,7 +112,7 @@ export const SET_TEXT = {
     w: DEVICE_WIDTH,
     h: startButtonHeight,
     color: 0xffffff,
-    text_size: 18,
+    text_size: 24,
     align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
     text_style: zui.text_style.NONE

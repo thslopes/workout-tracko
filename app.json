@@ -30,7 +30,9 @@
       "module": {
         "page": {
           "pages": [
-            "page/index"
+            "page/index",
+            "page/doing",
+            "page/rest"
           ]
         },
         "app-side": {
