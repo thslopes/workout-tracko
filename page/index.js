@@ -2,7 +2,7 @@ import { getText } from '@zos/i18n'
 import { Calorie, HeartRate, Time } from '@zos/sensor'
 import { createWidget, prop, widget } from '@zos/ui'
 import { getActualSet } from '../utils/exercise'
-import { CALORIE_LABEL, CALORIE_TEXT, EXERCISE_TEXT, FINISH_BUTTON, HEART_RATE_TEXT, HR_LABEL, SET_TEXT, START_BUTTON, TIME_TEXT, TOTAL_TIME } from '../utils/styles.gtr3.mini'
+import * as styles from './styles.gtr3.mini'
 
 
 Page({
@@ -44,32 +44,32 @@ Page({
     this.state.initialCalorie = calorie.getCurrent()
 
     createWidget(widget.TEXT, {
-      ...HR_LABEL,
+      ...styles.HR_LABEL,
       text: getText('hr')
     })
 
     const hrText = createWidget(widget.TEXT, {
-      ...HEART_RATE_TEXT,
+      ...styles.HEART_RATE_TEXT,
       text: heartRate.getCurrent()
     })
 
     createWidget(widget.TEXT, {
-      ...CALORIE_LABEL,
+      ...styles.CALORIE_LABEL,
       text: getText('cal')
     })
 
     const calorieText = createWidget(widget.TEXT, {
-      ...CALORIE_TEXT,
+      ...styles.CALORIE_TEXT,
       text: 0
     })
 
     const setText = createWidget(widget.TEXT, {
-      ...SET_TEXT,
+      ...styles.SET_TEXT,
       text: `${this.state.actualSet} / ${this.state.workout[this.state.actualExercise].sets}`
     })
 
     const exerciseText = createWidget(widget.TEXT, {
-      ...EXERCISE_TEXT,
+      ...styles.EXERCISE_TEXT,
       text: this.state.workout[this.state.actualExercise].name
     })
 
@@ -90,7 +90,7 @@ Page({
     heartRate.onCurrentChange(hrChangeCallback)
 
     createWidget(widget.BUTTON, {
-      ...START_BUTTON,
+      ...styles.START_BUTTON,
       text: 'Start',
       click_func: (btn) => {
         if (this.state.startTime === 0) {
@@ -105,7 +105,7 @@ Page({
     })
 
     createWidget(widget.BUTTON, {
-      ...FINISH_BUTTON,
+      ...styles.FINISH_BUTTON,
       text: 'Rest',
       click_func: () => {
         clearInterval(this.state.timerId)
@@ -127,12 +127,12 @@ Page({
     })
 
     const intervalTimer = createWidget(widget.TEXT, {
-      ...TIME_TEXT,
+      ...styles.TIME_TEXT,
       text: '00:00:00.0'
     })
 
     const totalTimeTimer = createWidget(widget.TEXT, {
-      ...TOTAL_TIME,
+      ...styles.TOTAL_TIME,
       text: '00:00:00.0'
     })
   }
