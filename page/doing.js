@@ -3,7 +3,6 @@ import { back, push } from '@zos/router'
 import { Calorie, HeartRate, Time } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
-import { log } from '@zos/utils'
 import { getActualSet } from '../utils/exercise'
 import * as styles from './index.styles'
 
@@ -126,7 +125,7 @@ Page({
     createWidget(widget.BUTTON, {
       ...styles.START_BUTTON,
       text: 'FINISH',
-      click_func: (btn) => {
+      click_func: () => {
         back()
       }
     })

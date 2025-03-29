@@ -32,7 +32,8 @@
           "pages": [
             "page/index",
             "page/doing",
-            "page/rest"
+            "page/rest",
+            "page/resume"
           ]
         },
         "app-side": {

@@ -35,7 +35,7 @@ export const FINISH_BUTTON = {
     text_size: 30,
     color: 0x000000,
     align_h: zui.align.CENTER_H,
-    align_v: zui.align.TOP,
+    align_v: zui.align.CENTER_V,
     normal_color: 0xffffa0,
     press_color: 0xff0000
 }
