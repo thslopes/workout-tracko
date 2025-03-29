@@ -26,7 +26,7 @@ const finishButtonHeight = 80;
 const finishButtonX = DEVICE_WIDTH / 2 - finishButtonWidth / 2;
 const finishButtonY = DEVICE_HEIGHT - finishButtonHeight;
 
-export const FINISH_BUTTON = {
+export const REST_BUTTON = {
     x: finishButtonX,
     y: finishButtonY,
     w: finishButtonWidth,

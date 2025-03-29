@@ -1,5 +1,5 @@
 import { getText } from '@zos/i18n'
-import { back, push } from '@zos/router'
+import { push, replace } from '@zos/router'
 import { Calorie, HeartRate, Time } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
@@ -115,8 +115,22 @@ Page({
     calorie.onChange(calorieChangeCallback)
 
     const hrChangeCallback = () => {
+      if (!sessionStorage.getItem('hrData')) {
+        sessionStorage.setItem('hrData', JSON.stringify([]))
+      }
+      const hrData = JSON.parse(sessionStorage.getItem('hrData'))
+      const currentTime = new Time().getTime()
+      const currentHr = heartRate.getCurrent()
+
+      hrData.push({
+        time: currentTime,
+        hr: currentHr
+      })
+
+      sessionStorage.setItem('hrData', JSON.stringify(hrData))
+
       hrText.setProperty(prop.TEXT, {
-        text: heartRate.getCurrent(),
+        text: currentHr,
       });
     };
 
@@ -126,12 +140,15 @@ Page({
       ...styles.START_BUTTON,
       text: 'FINISH',
       click_func: () => {
-        back()
+        sessionStorage.setItem('endTime', new Time().getTime())
+        sessionStorage.setItem('startTime', this.state.startTime)
+        sessionStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
+        replace({ url: 'page/resume', params: '' })
       }
     })
 
     createWidget(widget.BUTTON, {
-      ...styles.FINISH_BUTTON,
+      ...styles.REST_BUTTON,
       text: 'Rest',
       click_func: () => {
         const { actualSet, actualExercise, currentExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)

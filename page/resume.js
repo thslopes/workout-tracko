@@ -77,9 +77,18 @@ Page({
             text: 0
         })
 
+        const totalTime = sessionStorage.getItem('endTime') - sessionStorage.getItem('startTime')
+
+        //format totalTime to 00:00:00.0
+        const totalTimeHours = Math.floor(totalTime/1000/60/60)
+        const totalTimeMinutes = Math.floor((totalTime/1000/60)%60)
+        const totalTimeSeconds = Math.floor((totalTime/1000)%60)
+        const totalTimeMilliseconds = Math.floor((totalTime%1000)/100)
+        const totalTimeText = `${totalTimeHours.toString().padStart(2, '0')}:${totalTimeMinutes.toString().padStart(2, '0')}:${totalTimeSeconds.toString().padStart(2, '0')}.${totalTimeMilliseconds}`
+
         const totalTimeTimer = createWidget(widget.TEXT, {
             ...styles.TOTAL_TIME,
-            text: '00:00:00.0'
+            text: totalTimeText
         })
 
         console.log('startTime', this.state.startTime)
@@ -96,56 +105,10 @@ Page({
         createWidget(widget.FILL_RECT, {
             ...styles.RED_HR_ZONE,
         })
-        const data = [
-            {
-                'time': 0,
-                'heartRate': 80,
-            },
-            {
-                'time': 25,
-                'heartRate': 85,
-            },
-            {
-                'time': 40,
-                'heartRate': 90,
-            },
-            {
-                'time': 80,
-                'heartRate': 95,
-            },
-            {
-                'time': 85,
-                'heartRate': 110,
-            },
-            {
-                'time': 90,
-                'heartRate': 145,
-            },
-            {
-                'time': 100,
-                'heartRate': 110,
-            },
-            {
-                'time': 140,
-                'heartRate': 115,
-            },
-            {
-                'time': 150,
-                'heartRate': 120,
-            },
-            {
-                'time': 160,
-                'heartRate': 105,
-            },
-            {
-                'time': 190,
-                'heartRate': 110,
-            },
-            {
-                'time': 220,
-                'heartRate': 135,
-            },
-        ]
+        const data = sessionStorage.getItem('hrData')
+        if (!data) {
+            return
+        }
         const maxHR = 190
         const minHR = 80
         const graphWidth = styles.HEART_RATE_GRAPHIC.w
@@ -154,7 +117,7 @@ Page({
         const graphData = data.map((point) => {
             return {
                 x: ((point.time - data[0].time) / (data[data.length - 1].time - data[0].time)) * graphWidth + graphX,
-                y: graphHeight - ((point.heartRate - minHR) / (maxHR - minHR)) * graphHeight // Flip the Y-axis
+                y: graphHeight - ((point.hr - minHR) / (maxHR - minHR)) * graphHeight // Flip the Y-axis
             }
         })
 
