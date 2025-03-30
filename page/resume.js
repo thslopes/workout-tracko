@@ -97,20 +97,45 @@ Page({
     },
     buildGraph() {
         createWidget(widget.FILL_RECT, {
-            ...styles.GREEN_HR_ZONE,
+            ...styles.RESTING_HR_ZONE,
         })
         createWidget(widget.FILL_RECT, {
-            ...styles.YELLOW_HR_ZONE,
+            ...styles.WARMING_UP_HR_ZONE,
         })
         createWidget(widget.FILL_RECT, {
-            ...styles.RED_HR_ZONE,
+            ...styles.FAT_BURNING_HR_ZONE,
         })
-        const data = sessionStorage.getItem('hrData')
+        createWidget(widget.FILL_RECT, {
+            ...styles.AEROBIC_HR_ZONE,
+        })
+        createWidget(widget.FILL_RECT, {
+            ...styles.ANAEROBIC_HR_ZONE,
+        })
+        createWidget(widget.FILL_RECT, {
+            ...styles.MAX_VO2_HR_ZONE,
+        })
+        createWidget(widget.FILL_RECT, {
+            ...styles.MAX_HR_ZONE,
+        })
+        const data = JSON.parse(sessionStorage.getItem('hrData'))
+        // const data = [
+        //     { time: 0, hr: 72 },
+        //     { time: 1000, hr: 75 },
+        //     { time: 2000, hr: 80 },
+        //     { time: 3000, hr: 85 },
+        //     { time: 4000, hr: 175 },
+        //     { time: 5000, hr: 172 },
+        //     { time: 6000, hr: 100 },
+        //     { time: 7000, hr: 150 },
+        //     { time: 8000, hr: 110 },
+        //     { time: 9000, hr: 115 },
+        // ]
+
         if (!data) {
             return
         }
         const maxHR = 190
-        const minHR = 80
+        const minHR = 72
         const graphWidth = styles.HEART_RATE_GRAPHIC.w
         const graphHeight = styles.HEART_RATE_GRAPHIC.h
         const graphX = 0

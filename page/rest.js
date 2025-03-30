@@ -3,7 +3,7 @@ import { back } from '@zos/router'
 import { Calorie, HeartRate, Time } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
-import * as styles from './index.styles'
+import * as styles from './workout.styles'
 
 
 Page({
@@ -13,31 +13,10 @@ Page({
     timerId: null,
     initialCalorie: 0,
     actualSet: 1,
-    actualExercise: 0,
-    workout: [
-      {
-        'name': "Graviton",
-        'sets': 4,
-      },
-      {
-        'name': "Remada Articulada 20kg",
-        'sets': 3,
-      },
-      {
-        'name': "Serrote 12kg",
-        'sets': 3,
-      },
-      {
-        'name': "Rosca Martelo 9kg",
-        'sets': 3,
-      },
-      {
-        'name': "Rosca Scott 10kg",
-        'sets': 3,
-      }
-    ]
+    actualExercise: 0
   },
   loadState() {
+    this.state.workout = JSON.parse(sessionStorage.getItem('workout'))
     this.state.startTime = sessionStorage.getItem('startTime', 0)
     this.state.initialCalorie = sessionStorage.getItem('initialCalorie', 0)
     this.state.actualSet = sessionStorage.getItem('actualSet', 1)
