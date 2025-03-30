@@ -1,7 +1,7 @@
 import { push } from '@zos/router'
+import { sessionStorage } from '@zos/storage'
 import { createWidget, widget } from '@zos/ui'
 import * as styles from './index.styles'
-import { sessionStorage } from '@zos/storage'
 
 const workouts = [
   {
@@ -97,6 +97,9 @@ Page({
   state: {
   },
   build() {
+    if (sessionStorage.getItem('startTime', 0)) {
+      push({ url: 'page/doing', params: {} })
+    }
     for (let i = 0; i < workouts.length; i++) {
       createWidget(widget.BUTTON, {
         ...styles.START_BUTTON,

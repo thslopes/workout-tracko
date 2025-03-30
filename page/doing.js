@@ -21,6 +21,7 @@ Page({
     this.state.startTime = sessionStorage.getItem('startTime', 0)
     if (!this.state.startTime) {
       this.state.startTime = new Time().getTime()
+      sessionStorage.setItem('startTime', this.state.startTime)
     }
 
     this.state.initialCalorie = sessionStorage.getItem('initialCalorie')
