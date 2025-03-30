@@ -1,6 +1,6 @@
 import { getText } from '@zos/i18n'
 import { back, replace } from '@zos/router'
-import { Calorie, HeartRate, Time } from '@zos/sensor'
+import { Calorie, HeartRate, Time, Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
 import * as styles from './workout.styles'
@@ -31,8 +31,6 @@ Page({
     const heartRate = new HeartRate()
     const calorie = new Calorie()
 
-    this.state.initialCalorie = calorie.getCurrent()
-
     createWidget(widget.TEXT, {
       ...styles.HR_LABEL,
       text: getText('hr')
@@ -50,7 +48,7 @@ Page({
 
     const calorieText = createWidget(widget.TEXT, {
       ...styles.CALORIE_TEXT,
-      text: 0
+      text: calorie.getCurrent() - this.state.initialCalorie
     })
 
     const setText = createWidget(widget.TEXT, {
@@ -94,7 +92,7 @@ Page({
     heartRate.onCurrentChange(hrChangeCallback)
 
     createWidget(widget.BUTTON, {
-      ...styles.START_BUTTON,
+      ...styles.FINISH_BUTTON,
       text: 'FINISH',
       click_func: () => {
         sessionStorage.setItem('endTime', new Time().getTime())
@@ -125,6 +123,17 @@ Page({
     this.state.intervalTime = new Time().getTime()
     setInterval(setIntervalTime(this.state.startTime, totalTimeTimer), 100)
     this.state.timerId = setInterval(setIntervalTime(this.state.intervalTime, intervalTimer), 100)
+
+    setTimeout(() => {
+      const vibrator = new Vibrator()
+
+      // set scene
+      vibrator.start({mode: VIBRATOR_SCENE_STRONG_REMINDER})
+      setTimeout(() => {
+        vibrator.stop()
+        back()
+      }, 1000 * 3)
+    }, 1000 * 60)
   }
 })
 

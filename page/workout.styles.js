@@ -7,7 +7,7 @@ const startButtonWidth = 200;
 const startButtonHeight = 80;
 const startButtonX = DEVICE_WIDTH / 2 - startButtonWidth / 2;
 
-export const START_BUTTON = {
+export const FINISH_BUTTON = {
     x: startButtonX,
     y: 0,
     w: startButtonWidth,

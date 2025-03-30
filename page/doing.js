@@ -72,7 +72,7 @@ Page({
 
     const calorieText = createWidget(widget.TEXT, {
       ...styles.CALORIE_TEXT,
-      text: 0
+      text: calorie.getCurrent() - this.state.initialCalorie
     })
 
     const setText = createWidget(widget.TEXT, {
@@ -116,7 +116,7 @@ Page({
     heartRate.onCurrentChange(hrChangeCallback)
 
     createWidget(widget.BUTTON, {
-      ...styles.START_BUTTON,
+      ...styles.FINISH_BUTTON,
       text: 'FINISH',
       click_func: () => {
         sessionStorage.setItem('endTime', new Time().getTime())
