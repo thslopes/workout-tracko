@@ -1,5 +1,5 @@
 import { getText } from '@zos/i18n'
-import { back } from '@zos/router'
+import { back, replace } from '@zos/router'
 import { Calorie, HeartRate, Time } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
@@ -101,7 +101,7 @@ Page({
         sessionStorage.setItem('startTime', this.state.startTime)
         sessionStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
         replace({ url: 'page/resume', params: '' })
-        }
+      }
     })
 
     createWidget(widget.BUTTON, {

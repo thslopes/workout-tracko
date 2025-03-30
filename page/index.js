@@ -8,23 +8,31 @@ const workouts = [
     'name': "Biceps",
     workouts: [
       {
-        'name': "Graviton",
+        'name': "Graviton 50kg x7",
         'sets': 4,
       },
       {
-        'name': "Remada Articulada 20kg",
+        'name': "Puxada Articulada 40kg x12",
         'sets': 3,
       },
       {
-        'name': "Serrote 12kg",
+        'name': "Remada Articulada 30kg x12",
         'sets': 3,
       },
       {
-        'name': "Rosca Martelo 9kg",
+        'name': "Serrote 20kg x7",
         'sets': 3,
       },
       {
-        'name': "Rosca Scott 10kg",
+        'name': "Rosca Martelo 12kg x7",
+        'sets': 3,
+      },
+      {
+        'name': "Rosca Scott 10kg x12",
+        'sets': 3,
+      },
+      {
+        'name': "Encolhimento 12kg x12",
         'sets': 3,
       }
     ]
@@ -33,41 +41,53 @@ const workouts = [
     'name': "Triceps",
     workouts: [
       {
-        'name': "Triceps Pulley",
+        'name': "Cross 10kg x20",
         'sets': 4,
       },
       {
-        'name': "Triceps Testa",
+        'name': "Supino reto 14kg x12",
         'sets': 3,
       },
       {
-        'name': "Triceps Francês",
+        'name': "Supino sentado 20kg x7",
+        'sets': 2,
+      },
+      {
+        'name': "Desenvolvimento 7kg x12",
         'sets': 3,
       },
       {
-        'name': "Triceps Coice",
+        'name': "Tríceps barra 60kg 7",
         'sets': 3,
-      }
+      },
     ]
   },
   {
     'name': "Pernas",
     workouts: [
       {
-        'name': "Agachamento",
+        'name': "Agachamento barra 20kg x12",
+        'sets': 3,
+      },
+      {
+        'name': "Stiff 26kg x12",
+        'sets': 3,
+      },
+      {
+        'name': "Panturrilha em pé 20kg x12",
+        'sets': 3,
+      },
+      {
+        'name': "Sumo 32kg x12",
+        'sets': 2,
+      },
+      {
+        'name': "Mesa flexora 25kg x7",
         'sets': 4,
       },
       {
-        'name': "Leg Press",
-        'sets': 3,
-      },
-      {
-        'name': "Cadeira Extensora",
-        'sets': 3,
-      },
-      {
-        'name': "Cadeira Flexora",
-        'sets': 3,
+        'name': "Cadeira extensora 30kg x7",
+        'sets': 4,
       }
     ]
   }
