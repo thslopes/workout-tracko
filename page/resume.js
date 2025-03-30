@@ -17,8 +17,6 @@ Page({
             text: "Total Time"
         })
 
-
-
         const calorieText = createWidget(widget.TEXT, {
             ...styles.CALORIE_TEXT,
             text: sessionStorage.getItem('totalCalorie')

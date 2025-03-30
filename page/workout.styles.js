@@ -17,7 +17,7 @@ export const FINISH_BUTTON = {
     color: 0xffffff,
     align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
-    normal_color: 0x00dd00,
+    normal_color: 0x808080,
     press_color: 0xff0000
 }
 
@@ -37,6 +37,20 @@ export const REST_BUTTON = {
     align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
     normal_color: 0xffffa0,
+    press_color: 0xff0000
+}
+
+export const GO_BUTTON = {
+    x: finishButtonX,
+    y: finishButtonY,
+    w: finishButtonWidth,
+    h: finishButtonHeight,
+    radius: 12,
+    text_size: 30,
+    color: 0x000000,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
+    normal_color: 0x00ff00,
     press_color: 0xff0000
 }
 

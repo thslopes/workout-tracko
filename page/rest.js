@@ -103,7 +103,7 @@ Page({
     })
 
     createWidget(widget.BUTTON, {
-      ...styles.REST_BUTTON,
+      ...styles.GO_BUTTON,
       text: 'GO',
       click_func: () => {
         back()
