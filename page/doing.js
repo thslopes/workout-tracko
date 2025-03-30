@@ -76,10 +76,12 @@ Page({
       text: calorie.getCurrent() - this.state.initialCalorie
     })
 
-    const setText = createWidget(widget.TEXT, {
-      ...styles.SET_TEXT,
-      text: `${this.state.actualSet} / ${this.state.workout[this.state.actualExercise].sets}`
-    })
+    if (this.state.workout[this.state.actualExercise].sets > 0) {
+      const setText = createWidget(widget.TEXT, {
+        ...styles.SET_TEXT,
+        text: `${this.state.actualSet} / ${this.state.workout[this.state.actualExercise].sets}`
+      })
+    }
 
     const exerciseText = createWidget(widget.TEXT, {
       ...styles.EXERCISE_TEXT,
@@ -130,21 +132,23 @@ Page({
     const shouldDisplayRestButton = this.state.workout[this.state.actualExercise].sets > this.state.actualSet || this.state.workout.length > this.state.actualExercise + 1
     if (shouldDisplayRestButton) {
 
+      const buttonLabel = this.state.workout[this.state.actualExercise].sets > this.state.actualSet ? 'Next Set' : 'Next Exercise'
+
       createWidget(widget.BUTTON, {
         ...styles.REST_BUTTON,
-        text: 'Rest',
+        text: buttonLabel,
         click_func: () => {
+          const reload = !(this.state.workout[this.state.actualExercise].sets > 0)
           const { actualSet, actualExercise, currentExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
           this.state.actualSet = actualSet
           this.state.actualExercise = actualExercise
-          exerciseText.setProperty(prop.TEXT, {
-            text: currentExercise.name
-          })
-          setText.setProperty(prop.TEXT, {
-            text: `${actualSet} / ${currentExercise.sets}`
-          })
           this.saveState()
-          push({ url: 'page/rest', params: '' })
+
+          if (reload) {
+            replace({ url: 'page/doing', params: '' })
+          } else {
+            push({ url: 'page/rest', params: '' })
+          }
         }
       })
     }

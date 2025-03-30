@@ -90,6 +90,24 @@ const workouts = [
         'sets': 4,
       }
     ]
+  },
+  {
+    'name': "Corrida",
+    workouts: [
+      {
+        'name': "Aquecimento",
+        'duration': 300,
+      },
+      {
+        'name': "Sprint",
+        'duration': 30,
+        'sets': 10,
+        'rest': 90,
+      },
+      {
+        'name': "Desaceleração"
+      }
+    ]
   }
 ]
 
