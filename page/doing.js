@@ -127,23 +127,27 @@ Page({
       }
     })
 
-    createWidget(widget.BUTTON, {
-      ...styles.REST_BUTTON,
-      text: 'Rest',
-      click_func: () => {
-        const { actualSet, actualExercise, currentExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
-        this.state.actualSet = actualSet
-        this.state.actualExercise = actualExercise
-        exerciseText.setProperty(prop.TEXT, {
-          text: currentExercise.name
-        })
-        setText.setProperty(prop.TEXT, {
-          text: `${actualSet} / ${currentExercise.sets}`
-        })
-        this.saveState()
-        push({ url: 'page/rest', params: '' })
-      }
-    })
+    const shouldDisplayRestButton = this.state.workout[this.state.actualExercise].sets > this.state.actualSet || this.state.workout.length > this.state.actualExercise + 1
+    if (shouldDisplayRestButton) {
+
+      createWidget(widget.BUTTON, {
+        ...styles.REST_BUTTON,
+        text: 'Rest',
+        click_func: () => {
+          const { actualSet, actualExercise, currentExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
+          this.state.actualSet = actualSet
+          this.state.actualExercise = actualExercise
+          exerciseText.setProperty(prop.TEXT, {
+            text: currentExercise.name
+          })
+          setText.setProperty(prop.TEXT, {
+            text: `${actualSet} / ${currentExercise.sets}`
+          })
+          this.saveState()
+          push({ url: 'page/rest', params: '' })
+        }
+      })
+    }
 
     const intervalTimer = createWidget(widget.TEXT, {
       ...styles.TIME_TEXT,
