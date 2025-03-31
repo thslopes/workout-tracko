@@ -3,6 +3,14 @@ import zui from '@zos/ui';
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = zdevice.getDeviceInfo();
 
+export const CONTAINER = {
+  x: 0,
+  y: 0,
+  w: DEVICE_WIDTH,
+  h: DEVICE_HEIGHT,
+  scroll_enable: true,
+}
+
 const startButtonHeight = 20;
 
 const { height: hrCalorieLabelHeight } = zui.getTextLayout('cal', {
@@ -148,6 +156,59 @@ export const TOTAL_TIME_LABEL = {
   h: hrCalorieLabelHeight,
   color: 0xffffff,
   text_size: 23,
+  align_h: zui.align.CENTER_H,
+  align_v: zui.align.CENTER_V,
+  text_style: zui.text_style.NONE
+}
+
+const distanceLabelY = totalTimeTextY + timeTextHeight + 10;
+
+export const DISTANCE_LABEL = {
+  x: 0,
+  y: distanceLabelY,
+  w: DEVICE_WIDTH,
+  h: hrCalorieLabelHeight,
+  color: 0xffffff,
+  text_size: 23,
+  align_h: zui.align.CENTER_H,
+  align_v: zui.align.CENTER_V,
+  text_style: zui.text_style.NONE
+}
+
+const distanceTextY = distanceLabelY + hrCalorieLabelHeight;
+export const DISTANCE_TEXT = {
+  x: 0,
+  y: distanceTextY,
+  w: DEVICE_WIDTH,
+  h: timeTextHeight,
+  color: 0xffffff,
+  text_size: 36,
+  align_h: zui.align.CENTER_H,
+  align_v: zui.align.CENTER_V,
+  text_style: zui.text_style.NONE
+}
+
+const stepLabelY = distanceTextY + timeTextHeight + 10;
+export const STEPS_LABEL = {
+  x: 0,
+  y: stepLabelY,
+  w: DEVICE_WIDTH,
+  h: hrCalorieLabelHeight,
+  color: 0xffffff,
+  text_size: 23,
+  align_h: zui.align.CENTER_H,
+  align_v: zui.align.CENTER_V,
+  text_style: zui.text_style.NONE
+}
+
+const stepTextY = stepLabelY + hrCalorieLabelHeight;
+export const STEPS_TEXT = {
+  x: 0,
+  y: stepTextY,
+  w: DEVICE_WIDTH,
+  h: timeTextHeight,
+  color: 0xffffff,
+  text_size: 36,
   align_h: zui.align.CENTER_H,
   align_v: zui.align.CENTER_V,
   text_style: zui.text_style.NONE

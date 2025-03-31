@@ -97,7 +97,7 @@ const workouts = [
     workouts: [
       {
         'name': "Aquecimento",
-        'duration': 10*1000,
+        'duration': 20 * 1000,
       },
       {
         'name': "Sprint",
@@ -126,10 +126,13 @@ Page({
         y: styles.START_BUTTON.y + i * (styles.START_BUTTON.h + 10),
         click_func: () => {
           sessionStorage.setItem('workout', JSON.stringify(workouts[i].workouts))
+          sessionStorage.setItem('external', workouts[i].external ? 1 : 0)
           push({ url: 'page/doing', params: {} })
         }
       })
-        
+      // sessionStorage.setItem('workout', JSON.stringify(workouts[0].workouts))
+      // sessionStorage.setItem('external', workouts[3].external ? 1 : 0)
+      // push({ url: 'page/doing', params: {} })
     }
   }
 })

@@ -170,8 +170,56 @@ export const TIME_TEXT = {
     text_style: zui.text_style.NONE
 }
 
+export const STEPS_TEXT = {
+    x: 0,
+    y: timeTextY,
+    w: timeTextWitdh,
+    h: timeTextHeight,
+    color: 0xffffff,
+    text_size: 30,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
+export const DISTANCE_TEXT = {
+    x: DEVICE_WIDTH - timeTextWitdh,
+    y: timeTextY,
+    w: timeTextWitdh,
+    h: timeTextHeight,
+    color: 0xffffff,
+    text_size: 30,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
 export const TOTAL_TIME = {
     x: timeTextX,
+    y: totalTimeTextY,
+    w: timeTextWitdh,
+    h: timeTextHeight,
+    color: 0xffffff,
+    text_size: 18,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
+export const STEPS_LABEL = {
+    x: 0,
+    y: totalTimeTextY,
+    w: timeTextWitdh,
+    h: timeTextHeight,
+    color: 0xffffff,
+    text_size: 18,
+    align_h: zui.align.CENTER_H,
+    align_v: zui.align.CENTER_V,
+    text_style: zui.text_style.NONE
+}
+
+export const DISTANCE_LABEL = {
+    x: DEVICE_WIDTH - timeTextWitdh,
     y: totalTimeTextY,
     w: timeTextWitdh,
     h: timeTextHeight,

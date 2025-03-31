@@ -1,9 +1,10 @@
 import { getText } from '@zos/i18n'
 import { back, replace } from '@zos/router'
-import { Calorie, HeartRate, Time, Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
+import { Calorie, Distance, HeartRate, Step, Time, Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
 import * as styles from './workout.styles'
+import { setPageBrightTime } from '@zos/display'
 
 
 Page({
@@ -12,6 +13,8 @@ Page({
     intervalTime: 0,
     timerId: null,
     initialCalorie: 0,
+    initialDistance: 0,
+    initialSteps: 0,
     actualSet: 1,
     actualExercise: 0
   },
@@ -19,6 +22,8 @@ Page({
     this.state.workout = JSON.parse(sessionStorage.getItem('workout'))
     this.state.startTime = sessionStorage.getItem('startTime', 0)
     this.state.initialCalorie = sessionStorage.getItem('initialCalorie', 0)
+    this.state.initialDistance = sessionStorage.getItem('initialDistance', 0)
+    this.state.initialSteps = sessionStorage.getItem('initialSteps', 0)
     this.state.actualSet = sessionStorage.getItem('actualSet', 1)
     this.state.actualExercise = sessionStorage.getItem('actualExercise', 0)
     console.log('startTime', this.state.startTime)
@@ -30,6 +35,8 @@ Page({
     this.loadState()
     const heartRate = new HeartRate()
     const calorie = new Calorie()
+    const distance = new Distance()
+    const step = new Step()
 
     createWidget(widget.TEXT, {
       ...styles.HR_LABEL,
@@ -45,6 +52,42 @@ Page({
       ...styles.CALORIE_LABEL,
       text: getText('cal')
     })
+
+    if (sessionStorage.getItem('external', 0)) {
+
+      const stepCount = createWidget(widget.TEXT, {
+        ...styles.STEPS_TEXT,
+        text: step.getCurrent() - this.state.initialSteps
+      })
+      const distanceCount = createWidget(widget.TEXT, {
+        ...styles.DISTANCE_TEXT,
+        text: distance.getCurrent() - this.state.initialDistance
+      })
+
+      createWidget(widget.TEXT, {
+        ...styles.STEPS_LABEL,
+        text: 'steps'
+      })
+      createWidget(widget.TEXT, {
+        ...styles.DISTANCE_LABEL,
+        text: 'distance'
+      })
+
+      const stepCountChangeCallback = () => {
+        stepCount.setProperty(prop.TEXT, {
+          text: step.getCurrent() - this.state.initialSteps
+        });
+      };
+      step.onChange(stepCountChangeCallback)
+
+      const distanceCountChangeCallback = () => {
+        distanceCount.setProperty(prop.TEXT, {
+          text: distance.getCurrent() - this.state.initialDistance
+        });
+      };
+      distance.onChange(distanceCountChangeCallback)
+    }
+
 
     const calorieText = createWidget(widget.TEXT, {
       ...styles.CALORIE_TEXT,
@@ -98,6 +141,8 @@ Page({
         sessionStorage.setItem('endTime', new Time().getTime())
         sessionStorage.setItem('startTime', this.state.startTime)
         sessionStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
+        sessionStorage.setItem('totalDistance', distance.getCurrent() - this.state.initialDistance)
+        sessionStorage.setItem('totalSteps', step.getCurrent() - this.state.initialSteps)
         replace({ url: 'page/resume', params: '' })
       }
     })
@@ -125,6 +170,9 @@ Page({
     this.state.timerId = setInterval(setIntervalTime(this.state.intervalTime, intervalTimer), 100)
 
     const restTime = sessionStorage.getItem('rest', 60)
+    const result = setPageBrightTime({
+      brightTime: 1000 * restTime,
+    })
     setTimeout(() => {
       const vibrator = new Vibrator()
 
@@ -134,7 +182,7 @@ Page({
         vibrator.stop()
         back()
       }, 1000 * 3)
-    }, 1000 * (restTime -3))
+    }, 1000 * (restTime - 3))
   }
 })
 

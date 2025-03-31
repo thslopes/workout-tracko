@@ -7,17 +7,21 @@ import * as styles from './resume.styles'
 
 Page({
     build() {
-        createWidget(widget.TEXT, {
+        const container = createWidget(widget.VIEW_CONTAINER, {
+            ...styles.CONTAINER,
+        })
+
+        container.createWidget(widget.TEXT, {
             ...styles.CALORIE_LABEL,
             text: getText('cal')
         })
 
-        createWidget(widget.TEXT, {
+        container.createWidget(widget.TEXT, {
             ...styles.TOTAL_TIME_LABEL,
             text: "Total Time"
         })
 
-        const calorieText = createWidget(widget.TEXT, {
+        const calorieText = container.createWidget(widget.TEXT, {
             ...styles.CALORIE_TEXT,
             text: sessionStorage.getItem('totalCalorie')
         })
@@ -31,38 +35,60 @@ Page({
         const totalTimeMilliseconds = Math.floor((totalTime%1000)/100)
         const totalTimeText = `${totalTimeHours.toString().padStart(2, '0')}:${totalTimeMinutes.toString().padStart(2, '0')}:${totalTimeSeconds.toString().padStart(2, '0')}.${totalTimeMilliseconds}`
 
-        const totalTimeTimer = createWidget(widget.TEXT, {
+        const totalTimeTimer = container.createWidget(widget.TEXT, {
             ...styles.TOTAL_TIME,
             text: totalTimeText
         })
 
-        console.log('startTime', this.state.startTime)
-        this.state.intervalTime = new Time().getTime()
-        this.buildGraph()
+        this.buildGraph(container)
+
+        console.log('oi\n')
+        console.log('external', sessionStorage.getItem('external'))
+        if (sessionStorage.getItem('external', 0)) {
+            console.log('totalSteps', sessionStorage.getItem('totalSteps'))
+            console.log('totalDistance', sessionStorage.getItem('totalDistance'))
+            const stepCount = container.createWidget(widget.TEXT, {
+                ...styles.STEPS_TEXT,
+                text: sessionStorage.getItem('totalSteps')
+            })
+            const distanceCount = container.createWidget(widget.TEXT, {
+                ...styles.DISTANCE_TEXT,
+                text: sessionStorage.getItem('totalDistance')
+            })
+
+            container.createWidget(widget.TEXT, {
+                ...styles.STEPS_LABEL,
+                text: 'steps'
+            })
+            container.createWidget(widget.TEXT, {
+                ...styles.DISTANCE_LABEL,
+                text: 'distance'
+            })
+        }
     },
-    buildGraph() {
-        createWidget(widget.FILL_RECT, {
+    buildGraph(container) {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.RESTING_HR_ZONE,
         })
-        createWidget(widget.FILL_RECT, {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.WARMING_UP_HR_ZONE,
         })
-        createWidget(widget.FILL_RECT, {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.FAT_BURNING_HR_ZONE,
         })
-        createWidget(widget.FILL_RECT, {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.AEROBIC_HR_ZONE,
         })
-        createWidget(widget.FILL_RECT, {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.ANAEROBIC_HR_ZONE,
         })
-        createWidget(widget.FILL_RECT, {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.MAX_VO2_HR_ZONE,
         })
-        createWidget(widget.FILL_RECT, {
+        container.createWidget(widget.FILL_RECT, {
             ...styles.MAX_HR_ZONE,
         })
-        const data = JSON.parse(sessionStorage.getItem('hrData'))
+        const data = sessionStorage.getItem('hrData')
         // const data = [
         //     { time: 0, hr: 72 },
         //     { time: 1000, hr: 75 },
@@ -79,19 +105,20 @@ Page({
         if (!data) {
             return
         }
+        const parsedData = JSON.parse(data)
         const maxHR = 190
         const minHR = 72
         const graphWidth = styles.HEART_RATE_GRAPHIC.w
         const graphHeight = styles.HEART_RATE_GRAPHIC.h
         const graphX = 0
-        const graphData = data.map((point) => {
+        const graphData = parsedData.map((point) => {
             return {
-                x: ((point.time - data[0].time) / (data[data.length - 1].time - data[0].time)) * graphWidth + graphX,
+                x: ((point.time - parsedData[0].time) / (parsedData[parsedData.length - 1].time - parsedData[0].time)) * graphWidth + graphX,
                 y: graphHeight - ((point.hr - minHR) / (maxHR - minHR)) * graphHeight // Flip the Y-axis
             }
         })
 
-        const polyline = createWidget(widget.GRADKIENT_POLYLINE, {
+        const polyline = container.createWidget(widget.GRADKIENT_POLYLINE, {
             ...styles.HEART_RATE_GRAPHIC,
         })
         polyline.clear()

@@ -1,10 +1,11 @@
 import { getText } from '@zos/i18n'
 import { push, replace } from '@zos/router'
-import { Calorie, HeartRate, Time, Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
+import { Calorie, Distance, HeartRate, Step, Time, Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
 import { getActualSet } from '../utils/exercise'
 import * as styles from './workout.styles'
+import { setPageBrightTime } from '@zos/display'
 
 
 Page({
@@ -13,6 +14,8 @@ Page({
     intervalTime: 0,
     timerId: null,
     initialCalorie: 0,
+    initialDistance: 0,
+    initialSteps: 0,
     actualSet: 1,
     actualExercise: 0,
     actualRest: 0
@@ -26,6 +29,8 @@ Page({
     }
 
     this.state.initialCalorie = sessionStorage.getItem('initialCalorie')
+    this.state.initialDistance = sessionStorage.getItem('initialDistance')
+    this.state.initialSteps = sessionStorage.getItem('initialSteps')
 
     this.state.actualSet = sessionStorage.getItem('actualSet')
     if (!this.state.actualSet) {
@@ -47,15 +52,27 @@ Page({
     sessionStorage.setItem('actualExercise', this.state.actualExercise)
     sessionStorage.setItem('startTime', this.state.startTime)
     sessionStorage.setItem('initialCalorie', this.state.initialCalorie)
+    sessionStorage.setItem('initialDistance', this.state.initialDistance)
+    sessionStorage.setItem('initialSteps', this.state.initialSteps)
     sessionStorage.setItem('rest', this.state.rest)
   },
   build() {
     this.loadState()
     const heartRate = new HeartRate()
     const calorie = new Calorie()
+    const distance = new Distance()
+    const step = new Step()
 
     if (!this.state.initialCalorie) {
       this.state.initialCalorie = calorie.getCurrent()
+    }
+
+    if (!this.state.initialDistance) {
+      this.state.initialDistance = distance.getCurrent()
+    }
+
+    if (!this.state.initialSteps) {
+      this.state.initialSteps = step.getCurrent()
     }
 
     createWidget(widget.TEXT, {
@@ -129,6 +146,8 @@ Page({
         sessionStorage.setItem('endTime', new Time().getTime())
         sessionStorage.setItem('startTime', this.state.startTime)
         sessionStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
+        sessionStorage.setItem('totalDistance', distance.getCurrent() - this.state.initialDistance)
+        sessionStorage.setItem('totalSteps', step.getCurrent() - this.state.initialSteps)
         replace({ url: 'page/resume', params: '' })
       }
     })
@@ -167,12 +186,51 @@ Page({
       text: '00:00:00.0'
     })
 
+    if (sessionStorage.getItem('external', 0)) {
+
+      const stepCount = createWidget(widget.TEXT, {
+        ...styles.STEPS_TEXT,
+        text: step.getCurrent() - this.state.initialSteps
+      })
+      const distanceCount = createWidget(widget.TEXT, {
+        ...styles.DISTANCE_TEXT,
+        text: distance.getCurrent() - this.state.initialDistance
+      })
+
+      createWidget(widget.TEXT, {
+        ...styles.STEPS_LABEL,
+        text: 'steps'
+      })
+      createWidget(widget.TEXT, {
+        ...styles.DISTANCE_LABEL,
+        text: 'distance'
+      })
+
+      const stepCountChangeCallback = () => {
+        stepCount.setProperty(prop.TEXT, {
+          text: step.getCurrent() - this.state.initialSteps
+        });
+      };
+      step.onChange(stepCountChangeCallback)
+
+      const distanceCountChangeCallback = () => {
+        distanceCount.setProperty(prop.TEXT, {
+          text: distance.getCurrent() - this.state.initialDistance
+        });
+      };
+      distance.onChange(distanceCountChangeCallback)
+    }
+
     console.log('startTime', this.state.startTime)
     this.state.intervalTime = new Time().getTime()
     setInterval(setIntervalTime(this.state.startTime, totalTimeTimer), 100)
     this.state.timerId = setInterval(setIntervalTime(this.state.intervalTime, intervalTimer), 100)
 
     if (this.state.workout[this.state.actualExercise].duration) {
+      const result = setPageBrightTime({
+        brightTime: 1000 * (this.state.workout[this.state.actualExercise].duration),
+      })
+
       setTimeout(() => {
         const vibrator = new Vibrator()
         vibrator.start({ mode: VIBRATOR_SCENE_STRONG_REMINDER })
