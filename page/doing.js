@@ -1,6 +1,6 @@
 import { getText } from '@zos/i18n'
 import { push, replace } from '@zos/router'
-import { Calorie, HeartRate, Time } from '@zos/sensor'
+import { Calorie, HeartRate, Time, Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
 import { getActualSet } from '../utils/exercise'
@@ -14,7 +14,8 @@ Page({
     timerId: null,
     initialCalorie: 0,
     actualSet: 1,
-    actualExercise: 0
+    actualExercise: 0,
+    actualRest: 0
   },
   loadState() {
     this.state.workout = JSON.parse(sessionStorage.getItem('workout'))
@@ -46,6 +47,7 @@ Page({
     sessionStorage.setItem('actualExercise', this.state.actualExercise)
     sessionStorage.setItem('startTime', this.state.startTime)
     sessionStorage.setItem('initialCalorie', this.state.initialCalorie)
+    sessionStorage.setItem('rest', this.state.rest)
   },
   build() {
     this.loadState()
@@ -87,6 +89,8 @@ Page({
       ...styles.EXERCISE_TEXT,
       text: this.state.workout[this.state.actualExercise].name
     })
+
+    this.state.rest = this.state.workout[this.state.actualExercise].rest
 
     const calorieChangeCallback = () => {
       calorieText.setProperty(prop.TEXT, {
@@ -139,7 +143,7 @@ Page({
         text: buttonLabel,
         click_func: () => {
           const reload = !(this.state.workout[this.state.actualExercise].sets > 0)
-          const { actualSet, actualExercise, currentExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
+          const { actualSet, actualExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
           this.state.actualSet = actualSet
           this.state.actualExercise = actualExercise
           this.saveState()
@@ -167,6 +171,26 @@ Page({
     this.state.intervalTime = new Time().getTime()
     setInterval(setIntervalTime(this.state.startTime, totalTimeTimer), 100)
     this.state.timerId = setInterval(setIntervalTime(this.state.intervalTime, intervalTimer), 100)
+
+    if (this.state.workout[this.state.actualExercise].duration) {
+      setTimeout(() => {
+        const vibrator = new Vibrator()
+        vibrator.start({ mode: VIBRATOR_SCENE_STRONG_REMINDER })
+        setTimeout(() => {
+          vibrator.stop()
+          const reload = !(this.state.workout[this.state.actualExercise].sets > 0)
+          const { actualSet, actualExercise } = getActualSet(this.state.actualSet, this.state.actualExercise, this.state.workout)
+          this.state.actualSet = actualSet
+          this.state.actualExercise = actualExercise
+          this.saveState()
+          if (reload) {
+            replace({ url: 'page/doing', params: '' })
+          } else {
+            push({ url: 'page/rest', params: '' })
+          }
+        }, 1000 * 3)
+      }, 1000 * (this.state.workout[this.state.actualExercise].duration - 3))
+    }
   }
 })
 

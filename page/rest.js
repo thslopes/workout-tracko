@@ -124,16 +124,17 @@ Page({
     setInterval(setIntervalTime(this.state.startTime, totalTimeTimer), 100)
     this.state.timerId = setInterval(setIntervalTime(this.state.intervalTime, intervalTimer), 100)
 
+    const restTime = sessionStorage.getItem('rest', 60)
     setTimeout(() => {
       const vibrator = new Vibrator()
 
       // set scene
-      vibrator.start({mode: VIBRATOR_SCENE_STRONG_REMINDER})
+      vibrator.start({ mode: VIBRATOR_SCENE_STRONG_REMINDER })
       setTimeout(() => {
         vibrator.stop()
         back()
       }, 1000 * 3)
-    }, 1000 * 60)
+    }, 1000 * (restTime -3))
   }
 })
 

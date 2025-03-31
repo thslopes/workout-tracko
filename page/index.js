@@ -93,10 +93,11 @@ const workouts = [
   },
   {
     'name': "Corrida",
+    'external': true,
     workouts: [
       {
         'name': "Aquecimento",
-        'duration': 300,
+        'duration': 10*1000,
       },
       {
         'name': "Sprint",

@@ -126,7 +126,7 @@ export const SET_TEXT = {
     w: DEVICE_WIDTH,
     h: startButtonHeight,
     color: 0xffffff,
-    text_size: 24,
+    text_size: 30,
     align_h: zui.align.CENTER_H,
     align_v: zui.align.CENTER_V,
     text_style: zui.text_style.NONE
