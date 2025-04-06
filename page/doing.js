@@ -228,7 +228,7 @@ Page({
 
     if (this.state.workout[this.state.actualExercise].duration) {
       const result = setPageBrightTime({
-        brightTime: 1000 * (this.state.workout[this.state.actualExercise].duration),
+        brightTime: this.state.workout[this.state.actualExercise].duration,
       })
 
       setTimeout(() => {
