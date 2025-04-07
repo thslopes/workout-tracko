@@ -1,6 +1,6 @@
 import { getText } from '@zos/i18n'
 import { replace } from '@zos/router'
-import { Calorie, Distance, HeartRate, Step, Time } from '@zos/sensor'
+import { Calorie, Geolocation, HeartRate, Step, Time } from '@zos/sensor'
 import { sessionStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
 import * as styles from './workout.styles'
@@ -13,7 +13,8 @@ export default class WorkoutBase {
             intervalTime: 0,
             timerId: null,
             initialCalorie: 0,
-            initialDistance: 0,
+            lastGeolocation: null,
+            totalDistance: 0,
             initialSteps: 0,
             actualSet: 1,
             actualExercise: 0,
@@ -30,7 +31,8 @@ export default class WorkoutBase {
         }
 
         this.state.initialCalorie = sessionStorage.getItem('initialCalorie')
-        this.state.initialDistance = sessionStorage.getItem('initialDistance')
+        this.state.lastGeolocation = JSON.parse(sessionStorage.getItem('lastGeolocation', "{}"))
+        this.state.totalDistance = sessionStorage.getItem('totalDistance', 0)
         this.state.initialSteps = sessionStorage.getItem('initialSteps')
 
         this.state.actualSet = sessionStorage.getItem('actualSet')
@@ -54,27 +56,20 @@ export default class WorkoutBase {
         sessionStorage.setItem('actualExercise', this.state.actualExercise)
         sessionStorage.setItem('startTime', this.state.startTime)
         sessionStorage.setItem('initialCalorie', this.state.initialCalorie)
-        sessionStorage.setItem('initialDistance', this.state.initialDistance)
         sessionStorage.setItem('initialSteps', this.state.initialSteps)
+        sessionStorage.setItem('lastGeolocation', JSON.stringify(this.state.lastGeolocation))
+        sessionStorage.setItem('totalDistance', this.state.totalDistance)
     }
 
     baseBuild() {
         this.loadState()
         const heartRate = new HeartRate()
         const calorie = new Calorie()
-        const distance = new Distance()
+        const geolocation = new Geolocation()
         const step = new Step()
 
         if (!this.state.initialCalorie) {
             this.state.initialCalorie = calorie.getCurrent()
-        }
-
-        if (!this.state.initialDistance) {
-            this.state.initialDistance = distance.getCurrent()
-        }
-
-        if (!this.state.initialSteps) {
-            this.state.initialSteps = step.getCurrent()
         }
 
         createWidget(widget.TEXT, {
@@ -93,6 +88,9 @@ export default class WorkoutBase {
         })
 
         if (sessionStorage.getItem('external', 0)) {
+            if (!this.state.initialSteps) {
+                this.state.initialSteps = step.getCurrent()
+            }
 
             const stepCount = createWidget(widget.TEXT, {
                 ...styles.STEPS_TEXT,
@@ -100,7 +98,7 @@ export default class WorkoutBase {
             })
             const distanceCount = createWidget(widget.TEXT, {
                 ...styles.DISTANCE_TEXT,
-                text: distance.getCurrent() - this.state.initialDistance
+                text: this.state.totalDistance == 0 ? '--' : this.state.totalDistance
             })
 
             createWidget(widget.TEXT, {
@@ -119,14 +117,42 @@ export default class WorkoutBase {
             };
             step.onChange(stepCountChangeCallback)
 
-            const distanceCountChangeCallback = () => {
-                distanceCount.setProperty(prop.TEXT, {
-                    text: distance.getCurrent() - this.state.initialDistance
-                });
-            };
-            distance.onChange(distanceCountChangeCallback)
-        }
+            geolocation.start()
 
+            setInterval(() => {
+                console.log('\na\n')
+                if (geolocation.getStatus() !== 'A') {
+                    console.log('\nb\n')
+                    return
+                }
+                if (!this.state.lastGeolocation.latitude || !this.state.lastGeolocation.longitude) {
+                    console.log('\nc\n')
+                    this.state.lastGeolocation = {
+                        latitude: geolocation.getLatitude(),
+                        longitude: geolocation.getLongitude()
+                    }
+                    distanceCount.setProperty(prop.TEXT, {
+                        text: 0
+                    });
+                    return
+                }
+                console.log('\nd\n')
+                const actualGeolocation = {
+                    latitude: geolocation.getLatitude(),
+                    longitude: geolocation.getLongitude()
+                }
+                console.log(`\nactual:${JSON.stringify(actualGeolocation)}\nlast:${JSON.stringify(this.state.lastGeolocation)}`)
+                const distance = calculateDistance(this.state.lastGeolocation, actualGeolocation)
+                this.state.totalDistance = this.state.totalDistance ? this.state.totalDistance : 0
+                console.log(`\ndistance:${distance}\ntotalDistance:${this.state.totalDistance}`)
+                this.state.totalDistance = this.state.totalDistance + distance
+                this.state.lastGeolocation = actualGeolocation
+
+                distanceCount.setProperty(prop.TEXT, {
+                    text: this.state.totalDistance
+                });
+            }, 2000)
+        }
 
         const calorieText = createWidget(widget.TEXT, {
             ...styles.CALORIE_TEXT,
@@ -182,7 +208,7 @@ export default class WorkoutBase {
                 sessionStorage.setItem('endTime', new Time().getTime())
                 sessionStorage.setItem('startTime', this.state.startTime)
                 sessionStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
-                sessionStorage.setItem('totalDistance', distance.getCurrent() - this.state.initialDistance)
+                sessionStorage.setItem('totalDistance', this.state.totalDistance)
                 sessionStorage.setItem('totalSteps', step.getCurrent() - this.state.initialSteps)
                 replace({ url: 'page/resume', params: '' })
             }
@@ -222,3 +248,22 @@ const setIntervalTime = (startTime, component) => {
     }
 }
 
+const calculateDistance = (lastGeolocation, actualGeolocaltion) => {
+    const lat1 = lastGeolocation.latitude
+    const lon1 = lastGeolocation.longitude
+    const lat2 = actualGeolocaltion.latitude
+    const lon2 = actualGeolocaltion.longitude
+
+    const R = 6371e3 // metres
+    const φ1 = lat1 * Math.PI / 180 // φ in radians
+    const φ2 = lat2 * Math.PI / 180 // φ in radians
+    const Δφ = (lat2 - lat1) * Math.PI / 180 // difference in latitude in radians
+    const Δλ = (lon2 - lon1) * Math.PI / 180 // difference in longitude in radians
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+    return R * c // in metres
+}

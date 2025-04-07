@@ -14,11 +14,11 @@
   },
   "permissions": [
     "data:os.device.info",
-    "device:os.local_storage",
     "data:user.hd.heart_rate",
     "data:user.hd.calorie",
-    "data:user.hd.distance",
-    "data:user.hd.step"
+    "data:user.hd.step",
+    "device:os.local_storage",
+    "device:os.geolocation"
   ],
   "runtime": {
     "apiVersion": {

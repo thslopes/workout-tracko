@@ -11,6 +11,7 @@ const workoutBase = new WorkoutBase()
 Page({
   state: workoutBase.state,
   loadState: workoutBase.loadState,
+  saveState: workoutBase.saveState,
   build() {
     workoutBase.baseBuild()
 
@@ -20,6 +21,7 @@ Page({
       ...styles.GO_BUTTON,
       text: 'GO',
       click_func: () => {
+        this.saveState()
         back()
       }
     })
