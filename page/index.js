@@ -1,5 +1,5 @@
 import { push } from '@zos/router'
-import { sessionStorage } from '@zos/storage'
+import { localStorage } from '@zos/storage'
 import { createWidget, widget } from '@zos/ui'
 import * as styles from './index.styles'
 
@@ -116,7 +116,7 @@ Page({
   state: {
   },
   build() {
-    if (sessionStorage.getItem('startTime', 0)) {
+    if (localStorage.getItem('startTime', 0)) {
       push({ url: 'page/doing', params: {} })
     }
     for (let i = 0; i < workouts.length; i++) {
@@ -125,14 +125,14 @@ Page({
         text: workouts[i].name,
         y: styles.START_BUTTON.y + i * (styles.START_BUTTON.h + 10),
         click_func: () => {
-          sessionStorage.setItem('workout', JSON.stringify(workouts[i].workouts))
-          sessionStorage.setItem('external', workouts[i].external ? 1 : 0)
+          localStorage.setItem('workout', JSON.stringify(workouts[i].workouts))
+          localStorage.setItem('external', workouts[i].external ? 1 : 0)
           push({ url: 'page/doing', params: {} })
         }
       })
-      // sessionStorage.setItem('workout', JSON.stringify(workouts[0].workouts))
-      // sessionStorage.setItem('external', workouts[3].external ? 1 : 0)
-      // push({ url: 'page/doing', params: {} })
+      // localStorage.setItem('workout', JSON.stringify(workouts[0].workouts))
+      // localStorage.setItem('external', workouts[3].external ? 1 : 0)
+      // push({ url: 'page/map', params: {} })
     }
   }
 })

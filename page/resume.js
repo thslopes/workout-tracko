@@ -1,6 +1,5 @@
 import { getText } from '@zos/i18n'
-import { Time } from '@zos/sensor'
-import { sessionStorage } from '@zos/storage'
+import { localStorage } from '@zos/storage'
 import { createWidget, widget } from '@zos/ui'
 import * as styles from './resume.styles'
 
@@ -23,10 +22,10 @@ Page({
 
         const calorieText = container.createWidget(widget.TEXT, {
             ...styles.CALORIE_TEXT,
-            text: sessionStorage.getItem('totalCalorie')
+            text: localStorage.getItem('totalCalorie')
         })
 
-        const totalTime = sessionStorage.getItem('endTime') - sessionStorage.getItem('startTime')
+        const totalTime = localStorage.getItem('endTime') - localStorage.getItem('startTime')
 
         //format totalTime to 00:00:00.0
         const totalTimeHours = Math.floor(totalTime/1000/60/60)
@@ -43,17 +42,17 @@ Page({
         this.buildGraph(container)
 
         console.log('oi\n')
-        console.log('external', sessionStorage.getItem('external'))
-        if (sessionStorage.getItem('external', 0)) {
-            console.log('totalSteps', sessionStorage.getItem('totalSteps'))
-            console.log('totalDistance', sessionStorage.getItem('totalDistance'))
+        console.log('external', localStorage.getItem('external'))
+        if (localStorage.getItem('external', 0)) {
+            console.log('totalSteps', localStorage.getItem('totalSteps'))
+            console.log('totalDistance', localStorage.getItem('totalDistance'))
             const stepCount = container.createWidget(widget.TEXT, {
                 ...styles.STEPS_TEXT,
-                text: sessionStorage.getItem('totalSteps')
+                text: localStorage.getItem('totalSteps')
             })
             const distanceCount = container.createWidget(widget.TEXT, {
                 ...styles.DISTANCE_TEXT,
-                text: sessionStorage.getItem('totalDistance')
+                text: localStorage.getItem('totalDistance')
             })
 
             container.createWidget(widget.TEXT, {
@@ -65,6 +64,7 @@ Page({
                 text: 'distance'
             })
         }
+        localStorage.clear()
     },
     buildGraph(container) {
         container.createWidget(widget.FILL_RECT, {
@@ -88,7 +88,7 @@ Page({
         container.createWidget(widget.FILL_RECT, {
             ...styles.MAX_HR_ZONE,
         })
-        const data = sessionStorage.getItem('hrData')
+        const data = localStorage.getItem('hrData')
         // const data = [
         //     { time: 0, hr: 72 },
         //     { time: 1000, hr: 75 },

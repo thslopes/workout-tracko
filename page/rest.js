@@ -1,7 +1,7 @@
 import { setPageBrightTime } from '@zos/display'
-import { back } from '@zos/router'
+import { push } from '@zos/router'
 import { Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
-import { sessionStorage } from '@zos/storage'
+import { localStorage } from '@zos/storage'
 import { createWidget, widget } from '@zos/ui'
 import * as styles from './workout.styles'
 import WorkoutBase from './workoutBase'
@@ -15,14 +15,14 @@ Page({
   build() {
     workoutBase.baseBuild()
 
-    const restTime = sessionStorage.getItem('rest', 60)
+    const restTime = localStorage.getItem('rest', 60)
 
     createWidget(widget.BUTTON, {
       ...styles.GO_BUTTON,
       text: 'GO',
       click_func: () => {
         this.saveState()
-        back()
+        push({ url: 'page/doing', params: '' })
       }
     })
 
@@ -36,7 +36,7 @@ Page({
       vibrator.start({ mode: VIBRATOR_SCENE_STRONG_REMINDER })
       setTimeout(() => {
         vibrator.stop()
-        back()
+        push({ url: 'page/doing', params: '' })
       }, 1000 * 3)
     }, 1000 * (restTime - 3))
   }

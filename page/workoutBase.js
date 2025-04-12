@@ -1,10 +1,10 @@
+import { pauseDropWristScreenOff } from '@zos/display'
 import { getText } from '@zos/i18n'
 import { replace } from '@zos/router'
 import { Calorie, Geolocation, HeartRate, Step, Time } from '@zos/sensor'
-import { sessionStorage } from '@zos/storage'
+import { localStorage } from '@zos/storage'
 import { createWidget, prop, widget } from '@zos/ui'
 import * as styles from './workout.styles'
-
 
 export default class WorkoutBase {
     constructor() {
@@ -18,32 +18,35 @@ export default class WorkoutBase {
             initialSteps: 0,
             actualSet: 1,
             actualExercise: 0,
-            actualRest: 0
+            actualRest: 0,
+            locations: [],
         }
     }
 
     loadState() {
-        this.state.workout = JSON.parse(sessionStorage.getItem('workout'))
-        this.state.startTime = sessionStorage.getItem('startTime', 0)
+        this.state.workout = JSON.parse(localStorage.getItem('workout'))
+        this.state.startTime = localStorage.getItem('startTime', 0)
         if (!this.state.startTime) {
             this.state.startTime = new Time().getTime()
-            sessionStorage.setItem('startTime', this.state.startTime)
+            localStorage.setItem('startTime', this.state.startTime)
         }
 
-        this.state.initialCalorie = sessionStorage.getItem('initialCalorie')
-        this.state.lastGeolocation = JSON.parse(sessionStorage.getItem('lastGeolocation', "{}"))
-        this.state.totalDistance = sessionStorage.getItem('totalDistance', 0)
-        this.state.initialSteps = sessionStorage.getItem('initialSteps')
+        this.state.initialCalorie = localStorage.getItem('initialCalorie')
+        this.state.lastGeolocation = JSON.parse(localStorage.getItem('lastGeolocation', "{}"))
+        this.state.totalDistance = localStorage.getItem('totalDistance', 0)
+        this.state.initialSteps = localStorage.getItem('initialSteps')
 
-        this.state.actualSet = sessionStorage.getItem('actualSet')
+        this.state.actualSet = localStorage.getItem('actualSet')
         if (!this.state.actualSet) {
             this.state.actualSet = 1
         }
 
-        this.state.actualExercise = sessionStorage.getItem('actualExercise')
+        this.state.actualExercise = localStorage.getItem('actualExercise')
         if (!this.state.actualExercise) {
             this.state.actualExercise = 0
         }
+
+        this.state.locations = JSON.parse(localStorage.getItem('locations', "[]"))
 
         console.log('startTime', this.state.startTime)
         console.log('initialCalorie', this.state.initialCalorie)
@@ -52,16 +55,20 @@ export default class WorkoutBase {
     }
 
     saveState() {
-        sessionStorage.setItem('actualSet', this.state.actualSet)
-        sessionStorage.setItem('actualExercise', this.state.actualExercise)
-        sessionStorage.setItem('startTime', this.state.startTime)
-        sessionStorage.setItem('initialCalorie', this.state.initialCalorie)
-        sessionStorage.setItem('initialSteps', this.state.initialSteps)
-        sessionStorage.setItem('lastGeolocation', JSON.stringify(this.state.lastGeolocation))
-        sessionStorage.setItem('totalDistance', this.state.totalDistance)
+        localStorage.setItem('actualSet', this.state.actualSet)
+        localStorage.setItem('actualExercise', this.state.actualExercise)
+        localStorage.setItem('startTime', this.state.startTime)
+        localStorage.setItem('initialCalorie', this.state.initialCalorie)
+        localStorage.setItem('initialSteps', this.state.initialSteps)
+        localStorage.setItem('lastGeolocation', JSON.stringify(this.state.lastGeolocation))
+        localStorage.setItem('totalDistance', this.state.totalDistance)
+        localStorage.setItem('locations', JSON.stringify(this.state.locations))
     }
 
     baseBuild() {
+        pauseDropWristScreenOff({
+            duration: 0,
+        })
         this.loadState()
         const heartRate = new HeartRate()
         const calorie = new Calorie()
@@ -87,7 +94,7 @@ export default class WorkoutBase {
             text: getText('cal')
         })
 
-        if (sessionStorage.getItem('external', 0)) {
+        if (localStorage.getItem('external', 0)) {
             if (!this.state.initialSteps) {
                 this.state.initialSteps = step.getCurrent()
             }
@@ -119,37 +126,31 @@ export default class WorkoutBase {
 
             geolocation.start()
 
+            let ignoredLocation = 0
+            const ignoredLocationLimit = 5
+
             setInterval(() => {
-                console.log('\na\n')
                 if (geolocation.getStatus() !== 'A') {
-                    console.log('\nb\n')
                     return
                 }
-                if (!this.state.lastGeolocation.latitude || !this.state.lastGeolocation.longitude) {
-                    console.log('\nc\n')
-                    this.state.lastGeolocation = {
-                        latitude: geolocation.getLatitude(),
-                        longitude: geolocation.getLongitude()
-                    }
-                    distanceCount.setProperty(prop.TEXT, {
-                        text: 0
-                    });
+                if (ignoredLocation < ignoredLocationLimit) {
+                    ignoredLocation++
                     return
                 }
-                console.log('\nd\n')
-                const actualGeolocation = {
+
+                this.state.locations.push({
                     latitude: geolocation.getLatitude(),
                     longitude: geolocation.getLongitude()
+                })
+                this.state.totalDistance = calculateTotalDistance(this.state.locations)
+                if (this.state.totalDistance < 1) {
+                    return
                 }
-                console.log(`\nactual:${JSON.stringify(actualGeolocation)}\nlast:${JSON.stringify(this.state.lastGeolocation)}`)
-                const distance = calculateDistance(this.state.lastGeolocation, actualGeolocation)
-                this.state.totalDistance = this.state.totalDistance ? this.state.totalDistance : 0
-                console.log(`\ndistance:${distance}\ntotalDistance:${this.state.totalDistance}`)
-                this.state.totalDistance = this.state.totalDistance + distance
-                this.state.lastGeolocation = actualGeolocation
-
+                const floorDistance = Math.floor(this.state.totalDistance)
+                // format as km if greater than 1000
+                const formattedDistance = floorDistance > 1000 ? (floorDistance / 1000).toFixed(2) + ' km' : floorDistance + ' m'
                 distanceCount.setProperty(prop.TEXT, {
-                    text: this.state.totalDistance
+                    text: formattedDistance
                 });
             }, 2000)
         }
@@ -180,10 +181,10 @@ export default class WorkoutBase {
         calorie.onChange(calorieChangeCallback)
 
         const hrChangeCallback = () => {
-            if (!sessionStorage.getItem('hrData')) {
-                sessionStorage.setItem('hrData', JSON.stringify([]))
+            if (!localStorage.getItem('hrData')) {
+                localStorage.setItem('hrData', JSON.stringify([]))
             }
-            const hrData = JSON.parse(sessionStorage.getItem('hrData'))
+            const hrData = JSON.parse(localStorage.getItem('hrData'))
             const currentTime = new Time().getTime()
             const currentHr = heartRate.getCurrent()
 
@@ -192,7 +193,7 @@ export default class WorkoutBase {
                 hr: currentHr
             })
 
-            sessionStorage.setItem('hrData', JSON.stringify(hrData))
+            localStorage.setItem('hrData', JSON.stringify(hrData))
 
             hrText.setProperty(prop.TEXT, {
                 text: currentHr,
@@ -205,11 +206,11 @@ export default class WorkoutBase {
             ...styles.FINISH_BUTTON,
             text: 'FINISH',
             click_func: () => {
-                sessionStorage.setItem('endTime', new Time().getTime())
-                sessionStorage.setItem('startTime', this.state.startTime)
-                sessionStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
-                sessionStorage.setItem('totalDistance', this.state.totalDistance)
-                sessionStorage.setItem('totalSteps', step.getCurrent() - this.state.initialSteps)
+                localStorage.setItem('endTime', new Time().getTime())
+                localStorage.setItem('startTime', this.state.startTime)
+                localStorage.setItem('totalCalorie', calorie.getCurrent() - this.state.initialCalorie)
+                localStorage.setItem('totalDistance', this.state.totalDistance)
+                localStorage.setItem('totalSteps', step.getCurrent() - this.state.initialSteps)
                 replace({ url: 'page/resume', params: '' })
             }
         })
@@ -248,22 +249,44 @@ const setIntervalTime = (startTime, component) => {
     }
 }
 
-const calculateDistance = (lastGeolocation, actualGeolocaltion) => {
-    const lat1 = lastGeolocation.latitude
-    const lon1 = lastGeolocation.longitude
-    const lat2 = actualGeolocaltion.latitude
-    const lon2 = actualGeolocaltion.longitude
+/**
+ * Calculates the distance between two geographical points in meters using the Haversine formula.
+ * 
+ * @param {Object} pointA - The first geolocation point with latitude and longitude.
+ * @param {Object} pointB - The second geolocation point with latitude and longitude.
+ * @returns {number} The distance in meters.
+ */
+const calculateDistance = ({ latitude: lat1, longitude: lon1 }, { latitude: lat2, longitude: lon2 }) => {
+    const R = 6371e3; // Earth's radius in meters
+    const toRadians = (degrees) => degrees * Math.PI / 180;
 
-    const R = 6371e3 // metres
-    const φ1 = lat1 * Math.PI / 180 // φ in radians
-    const φ2 = lat2 * Math.PI / 180 // φ in radians
-    const Δφ = (lat2 - lat1) * Math.PI / 180 // difference in latitude in radians
-    const Δλ = (lon2 - lon1) * Math.PI / 180 // difference in longitude in radians
+    const φ1 = toRadians(lat1);
+    const φ2 = toRadians(lat2);
+    const Δφ = toRadians(lat2 - lat1);
+    const Δλ = toRadians(lon2 - lon1);
 
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    const a = Math.sin(Δφ / 2) ** 2 +
         Math.cos(φ1) * Math.cos(φ2) *
-        Math.sin(Δλ / 2) * Math.sin(Δλ / 2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        Math.sin(Δλ / 2) ** 2;
 
-    return R * c // in metres
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+const calculateTotalDistance = (locations) => {
+    let totalDistance = 0
+    let lastLocation = null
+
+    for (let i = 0; i < locations.length; i++) {
+        if (!lastLocation) {
+            lastLocation = locations[i]
+            continue
+        }
+        const distance = calculateDistance(lastLocation, locations[i])
+        if (distance > 1) {
+            totalDistance += distance
+            lastLocation = locations[i]
+        }
+    }
+
+    return totalDistance
 }

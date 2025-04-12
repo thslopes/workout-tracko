@@ -1,5 +1,5 @@
 import { setPageBrightTime } from '@zos/display'
-import { push, replace } from '@zos/router'
+import { push } from '@zos/router'
 import { Vibrator, VIBRATOR_SCENE_STRONG_REMINDER } from '@zos/sensor'
 import { createWidget, widget } from '@zos/ui'
 import { getActualSet } from '../utils/exercise'
