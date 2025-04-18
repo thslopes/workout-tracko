@@ -1,16 +1,16 @@
 {
   "configVersion": "v2",
   "app": {
-    "appId": 21214,
-    "appName": "Tracko",
     "appType": "app",
     "version": {
       "code": 1,
-      "name": "1.0.2.123"
+      "name": "1.0.0"
     },
+    "appId": 29719,
+    "appName": "Tracko",
     "icon": "workout-tracko.png",
-    "vender": "zepp",
-    "description": "workout tracker"
+    "vender": "T3SL",
+    "description": "Workout tracker"
   },
   "permissions": [
     "data:os.device.info",
@@ -24,7 +24,7 @@
     "apiVersion": {
       "compatible": "2.0.0",
       "target": "2.0.0",
-      "minVersion": "2.0.0"
+      "minVersion": "2.0"
     }
   },
   "targets": {
@@ -33,6 +33,7 @@
         "page": {
           "pages": [
             "page/index",
+            "page/home/index.page",
             "page/doing",
             "page/rest",
             "page/resume"
@@ -56,8 +57,9 @@
   },
   "i18n": {
     "en-US": {
-      "appName": "Tracko"
+      "name": "Tracko"
     }
   },
-  "defaultLanguage": "en-US"
+  "defaultLanguage": "en-US",
+  "debug": false
 }
